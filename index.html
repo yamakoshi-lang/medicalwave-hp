@@ -788,9 +788,9 @@ async function sendForm(e){e.preventDefault();const f=e.target,b=f.querySelector
   data._subject='【HPお問い合わせ】'+(data['ご相談の種類']||'')+'／'+(data['お名前']||'');data._template='table';data._replyto=data.email;
   b.disabled=true;b.style.opacity=.6;st.textContent='送信中です…';
   try{const r=await fetch('https://formsubmit.co/ajax/yamakoshi@medical-wave.jp',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(data)});
-    const j=await r.json().catch(()=>({}));if(!r.ok||j.success===false||j.success==='false')throw 0;
+    const j=await r.json().catch(()=>({}));if(!r.ok||j.success===false||j.success==='false')throw new Error(j.message||('HTTP '+r.status));
     f.reset();st.textContent='送信しました。担当者より折り返しご連絡いたします。';alert('お問い合わせありがとうございます。\n担当者より折り返しご連絡いたします。')}
-  catch(_){st.textContent='送信に失敗しました。お手数ですがお電話（0280-23-2097）でご連絡ください。'}
+  catch(err){console.warn('form error:',err);st.textContent='送信に失敗しました。お手数ですがお電話（0280-23-2097）でご連絡ください。［詳細: '+(err&&err.message||err)+'］'}
   finally{b.disabled=false;b.style.opacity=''}}
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const io=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){en.target.classList.add('on');io.unobserve(en.target)}}),{threshold:.12});
